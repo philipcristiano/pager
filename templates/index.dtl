@@ -1,0 +1,12 @@
+{% extends "base.dtl" %}
+
+{% block content %}
+
+    I like RSS and wanted SeatGeek events in my RSS reader instead of by
+    email. The feeds here will search for concerts within 5 miles of the Zip
+    Code in the URL. It returns the first 1000 events.
+
+    Example: http://seatgeekrss.philipcristiano.com/atom/10016
+
+{% endblock %}
+

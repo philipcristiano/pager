@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+        <link href="http://seatgeekrss.philipcristiano.com/atom/{{ zip }}" rel="self" />
+        <title>Local Events</title>
+        <subtitle>Events in your area</subtitle>
+        <id>urn:uuid:50a76c80-d399-11d9-b91C-0003939e0af6</id>
+        <updated>2013-04-13T18:30:02Z</updated>
+
+        {% for event in events %}
+        <entry>
+                <title>{{ event.title | escape }}</title>
+                <link href="{{ event.url }}" />
+                <id>{{ event.id }}</id>
+                <updated>{{ event.updated_at }}Z</updated>
+                <summary>{{ event.description | escape }}</summary>
+                <author>
+                      <name>Philip Cristiano</name>
+                      <email>philipcristiano@gmail.com</email>
+                </author>
+                {% for tag in event.tags %}
+                <category term="{{ tag | escape }}"/>
+                {% endfor %}
+        </entry>
+        {% endfor %}
+
+</feed>

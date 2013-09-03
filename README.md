@@ -1,4 +1,3 @@
-pager
-=====
+# PagEr
 
-An Erlang infrastructure-monitoring tool that I can use to play with Erlang development
+A tool similar to my Graphite Pager project. This is so I can play with Erlang as an actual goal.

@@ -1,0 +1,10 @@
+{% extends "base.dtl" %}
+
+{% block content %}
+
+    Stats:
+
+    fetching_zips: {{ stats.fetching_zips }}
+
+{% endblock %}
+
