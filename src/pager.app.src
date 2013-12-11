@@ -10,7 +10,6 @@
                   sasl,
                   crypto,
                   riak_sysmon,
-                  webmachine,
                   riak_core
                  ]},
   {mod, { pager_app, []}},
