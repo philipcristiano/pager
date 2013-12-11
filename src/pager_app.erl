@@ -8,22 +8,19 @@
 %% ===================================================================
 %% Application callbacks
 %% ===================================================================
-
 start() ->
-    ok = application:start(lager),
-    ok = application:start(json),
-    ok = application:start(sasl),
-    ok = application:start(crypto),
-    ok = application:start(riak_sysmon),
-    ok = application:start(inets),
-    ok = application:start(mochiweb),
-    ok = application:start(webmachine),
-    ok = application:start(os_mon),
-    ok = application:start(riak_core),
-    ok = riak_core:register(pager, [{vnode_module, pager_vnode}]),
-    ok = riak_core_node_watcher:service_up(pager, self()),
-    ok = application:start(pager),
-    ok.
+    a_start(pager, permanent).
+
+a_start(App, Type) ->
+    start_ok(App, Type, application:start(App, Type)).
+
+start_ok(_App, _Type, ok) -> ok;
+start_ok(_App, _Type, {error, {already_started, _App}}) -> ok;
+start_ok(App, Type, {error, {not_started, Dep}}) ->
+    ok = a_start(Dep, Type),
+    a_start(App, Type);
+start_ok(App, _Type, {error, Reason}) ->
+    erlang:error({app_start_failed, App, Reason}).
 
 start(_StartType, _StartArgs) ->
     pager_sup:start_link().
