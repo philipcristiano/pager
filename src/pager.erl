@@ -1,6 +1,6 @@
 -module(pager).
 
--export([ping/0, first_value/1, run/0]).
+-export([ping/0, first_value/1, run/0, send_event/2]).
 
 
 ping() ->
@@ -16,8 +16,18 @@ run() ->
 send_metrics(Type, [{Target, Value}|T]) ->
     send_metric(Type, Target, Value),
     send_metrics(Type, T);
-send_metrics(Type, []) ->
+send_metrics(_, []) ->
     ok.
+
+send_event(RoutingKey, Data) ->
+    DocIdx = riak_core_util:chash_key({<<"metrics">>, term_to_binary(RoutingKey)}),
+    PrefList = riak_core_apl:get_primary_apl(DocIdx, 1, pager),
+    [{IndexNode, _Type}] = PrefList,
+    Msg = {event, RoutingKey, Data},
+    Resp = riak_core_vnode_master:sync_spawn_command(IndexNode, Msg, pager_vnode_master),
+    io:format("send: ~p~n", [Msg]),
+    io:format("Resp: ~p~n", [Resp]).
+
 
 send_metric(Type, Target, Value) ->
     DocIdx = riak_core_util:chash_key({<<"metrics">>, term_to_binary(Type)}),

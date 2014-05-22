@@ -30,6 +30,8 @@ handle_command(ping, _Sender, State) ->
     State2 = #state {partition=State#state.partition,
                      count=State#state.count + 1},
     {reply, {pong, State2}, State2};
+handle_command({event, RoutingKey, Data}, _Sender, State) ->
+    {reply, {pong, {event, RoutingKey, Data}, State}, State};
 handle_command({metric, Type, Metric, Value}, _Sender, State) ->
     State2 = #state {partition=State#state.partition,
                      count=State#state.count + 1},

@@ -9,7 +9,10 @@
 %% Application callbacks
 %% ===================================================================
 start() ->
-    a_start(pager, permanent).
+    a_start(pager, permanent),
+    ok = riak_core:register([{vnode_module, pager_vnode}]),
+    ok = riak_core_node_watcher:service_up(pager, self()),
+    ok.
 
 a_start(App, Type) ->
     start_ok(App, Type, application:start(App, Type)).
