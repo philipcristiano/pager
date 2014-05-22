@@ -12,6 +12,9 @@ erl: compile
 server: compile
 	ERL_LIBS=deps erl -pa ebin -pa deps -s pager_app -noshell -sname pager
 
+.PHONY: test
+test: compile
+	rebar eunit
 
 .PHONY: package
 package:
