@@ -10,6 +10,5 @@ receive_event() ->
     end,
     Rec.
 
-
 send_event_func(Pid) ->
     fun (Event) -> Pid ! Event end.
