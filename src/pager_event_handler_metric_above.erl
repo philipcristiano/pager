@@ -31,7 +31,7 @@
 
 -define(SERVER, ?MODULE).
 
--record(state, {threshold}).
+-record(state, {passevent, threshold}).
 
 %%%===================================================================
 %%% API
@@ -76,8 +76,8 @@ start_link(Args) ->
 %%                     {stop, StopReason}
 %% @end
 %%--------------------------------------------------------------------
-init([Threshold]) ->
-        {ok, ok, #state{threshold=Threshold}}.
+init([PassEvent, Threshold]) ->
+        {ok, ok, #state{passevent=PassEvent, threshold=Threshold}}.
 
 %%--------------------------------------------------------------------
 %% @private
@@ -115,10 +115,14 @@ init([Threshold]) ->
 %%--------------------------------------------------------------------
 ok(Event, From, State) ->
     {ok, NextState} = evaluate_event(Event,State),
+    Next = State#state.passevent,
+    Next([{state, NextState} | Event]),
     {reply, {ok, NextState}, NextState, State}.
 
 critical(Event, From, State) ->
     {ok, NextState} = evaluate_event(Event,State),
+    Next = State#state.passevent,
+    Next([{state, NextState} | Event]),
     {reply, {ok, NextState}, NextState, State}.
 
 %%--------------------------------------------------------------------
@@ -214,3 +218,7 @@ evaluate_event(Event, State) ->
         Value =< Threshold ->
             {ok, ok}
     end.
+
+notify(Pid, Event) ->
+    io:format("Sending: ~p~n", [{Pid, Event}]),
+    Pid ! Event.
