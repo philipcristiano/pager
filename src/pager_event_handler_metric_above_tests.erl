@@ -34,10 +34,10 @@ stop(Pid) ->
 
 threshold_ok(Pid) ->
     {ok, _} = pager_event_handler_metric_above:send_metric(Pid, [{metric, 50}]),
-    Msg = pager_test_helpers:receive_event(),
-    [?_assertEqual(Msg, [{state, ok}, {metric, 50}])].
+    {ok, Msg} = pager_test_helpers:receive_event(),
+    [?_assertEqual([{state, ok}, {metric, 50}], Msg)].
 
 threshold_critical(Pid) ->
     {ok, _} = pager_event_handler_metric_above:send_metric(Pid, [{metric, 60}]),
-    Msg = pager_test_helpers:receive_event(),
-    [?_assertEqual(Msg, [{state, critical}, {metric, 60}])].
+    {ok, Msg} = pager_test_helpers:receive_event(),
+    [?_assertEqual([{state, critical}, {metric, 60}], Msg)].

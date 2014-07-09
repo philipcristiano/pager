@@ -33,10 +33,10 @@ stop(Pid) ->
 
 state_unchanged(Pid) ->
     {ok, _} = pager_event_handler_metric_above:send_metric(Pid, [{state, ok}]),
-    Msg = pager_test_helpers:receive_event(),
-    [?_assertEqual(Msg, none)].
+    {ok, Msg} = pager_test_helpers:receive_event(),
+    [?_assertEqual(none, Msg)].
 
 state_changed(Pid) ->
     {ok, _} = pager_event_handler_metric_above:send_metric(Pid, [{state, critical}]),
-    Msg = pager_test_helpers:receive_event(),
-    [?_assertEqual(Msg, [{state, critical}])].
+    {ok, Msg} = pager_test_helpers:receive_event(),
+    [?_assertEqual([{state, critical}], Msg)].

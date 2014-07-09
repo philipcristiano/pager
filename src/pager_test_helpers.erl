@@ -5,8 +5,8 @@
 
 receive_event() ->
     Rec = receive
-        Msg -> Msg
-        after 20 -> none
+        Msg -> {ok, Msg}
+        after 20 -> {timeout, none}
     end,
     Rec.
 
