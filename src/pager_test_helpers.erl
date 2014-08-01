@@ -1,14 +1,26 @@
 -module(pager_test_helpers).
 
 -export([receive_event/0,
-         send_event_func/1]).
+         receive_event/1,
+         send_event_func/1,
+         send_event_func/2]).
+
+receive_event(Ref) ->
+    Rec = receive
+        {Ref, Msg} -> Msg
+        after 20 -> none
+    end,
+    Rec.
 
 receive_event() ->
     Rec = receive
-        Msg -> {ok, Msg}
-        after 20 -> {timeout, none}
+        Msg -> Msg
+        after 20 -> none
     end,
     Rec.
+
+send_event_func(Ref, Pid) ->
+    fun (Event) -> Pid ! {Ref, Event} end.
 
 send_event_func(Pid) ->
     fun (Event) -> Pid ! Event end.

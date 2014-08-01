@@ -24,19 +24,20 @@ metric_above_threshold_test_() ->
       fun state_changed/1]}.
 
 start() ->
-    {ok, Pid} = pager_event_handler_state_change:start_link([pager_test_helpers:send_event_func(self()), ok]),
-    Pid.
+    Ref = make_ref(),
+    {ok, Pid} = pager_event_handler_state_change:start_link([pager_test_helpers:send_event_func(Ref, self()), ok]),
+    {Ref, Pid}.
 
-stop(Pid) ->
+stop({_Ref, Pid}) ->
     pager_event_handler_metric_above:stop(Pid).
 
 
-state_unchanged(Pid) ->
+state_unchanged({Ref, Pid}) ->
     {ok, _} = pager_event_handler_metric_above:send_metric(Pid, [{state, ok}]),
-    {ok, Msg} = pager_test_helpers:receive_event(),
-    [?_assertEqual(none, Msg)].
+    Msg = pager_test_helpers:receive_event(Ref),
+    [?_assertEqual(Msg, none)].
 
-state_changed(Pid) ->
+state_changed({Ref, Pid}) ->
     {ok, _} = pager_event_handler_metric_above:send_metric(Pid, [{state, critical}]),
-    {ok, Msg} = pager_test_helpers:receive_event(),
-    [?_assertEqual([{state, critical}], Msg)].
+    Msg = pager_test_helpers:receive_event(Ref),
+    [?_assertEqual(Msg, [{state, critical}])].
