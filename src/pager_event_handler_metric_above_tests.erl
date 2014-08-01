@@ -9,12 +9,6 @@
 
 -module(pager_event_handler_metric_above_tests).
 
-simple_test() ->
-   ?assert(1 +1 =:= 2).
-
-another_simple_test() ->
-   ?assert(1 +1 =:= 2).
-
 metric_above_threshold_test_() ->
     {foreach,
      spawn,
