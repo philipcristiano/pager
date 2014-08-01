@@ -18,7 +18,7 @@ metric_above_threshold_test_() ->
 
 start() ->
     Ref = make_ref(),
-    {ok, Pid} = pager_event_handler_min_ok:start_link([pager_test_helpers:send_event_func(Ref, self()), [{unique, {service, pod}}, {min, 3}]]),
+    {ok, Pid} = pager_event_handler_min_ok:start_link([pager_test_helpers:send_event_func(Ref, self()), [{unique, {service, pod}}, {min, 2}]]),
     {Ref, Pid}.
 
 stop({_Ref, Pid}) ->
@@ -29,7 +29,8 @@ next_event(Ref) ->
 
 enough_hosts({Ref, Pid}) ->
     {ok, _} = pager_event_handler_min_ok:send_event(Pid, [{service, <<"foo">>}, {pod, <<"bar">>}, {host, <<"host_1">>}, {state, <<"ok">>}]),
-    {ok, _} = pager_event_handler_min_ok:send_event(Pid, [{service, <<"foo">>}, {pod, <<"bar">>}, {host, <<"host_1">>}, {state, <<"ok">>}]),
-    Msg = next_event(Ref),
-    _ = next_event(Ref),
-    [?_assertEqual([{ok, [{service, <<"foo">>}, {pod, <<"bar">>}, {state, critical}]}], Msg)].
+    {ok, _} = pager_event_handler_min_ok:send_event(Pid, [{service, <<"foo">>}, {pod, <<"bar">>}, {host, <<"host_2">>}, {state, <<"ok">>}]),
+    MsgCritical = next_event(Ref),
+    MsgOk = next_event(Ref),
+    [?_assertEqual([{ok, [{state, critical}]}], MsgCritical),
+     ?_assertEqual([{ok, [{state, ok}]}], MsgOk)].
