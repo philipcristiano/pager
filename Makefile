@@ -30,7 +30,7 @@ provision:
 
 shell: compile
 	erl -pag ebin \
-	-name shell@127.0.0.1 \
+	-sname pager \
 	-setcookie shell \
 	-pa deps/*/ebin \
 	-pa ebin \
