@@ -29,8 +29,14 @@ next_event(Ref) ->
 
 enough_hosts({Ref, Pid}) ->
     {ok, _} = pager_event_handler_min_ok:send_event(Pid, [{service, <<"foo">>}, {pod, <<"bar">>}, {host, <<"host_1">>}, {state, <<"ok">>}]),
+    MsgNotEnough = next_event(Ref),
+
     {ok, _} = pager_event_handler_min_ok:send_event(Pid, [{service, <<"foo">>}, {pod, <<"bar">>}, {host, <<"host_2">>}, {state, <<"ok">>}]),
-    MsgCritical = next_event(Ref),
     MsgOk = next_event(Ref),
-    [?_assertEqual([{ok, [{state, critical}]}], MsgCritical),
-     ?_assertEqual([{ok, [{state, ok}]}], MsgOk)].
+
+    {ok, _} = pager_event_handler_min_ok:send_event(Pid, [{service, <<"foo">>}, {pod, <<"bar">>}, {host, <<"host_2">>}, {state, <<"critical">>}]),
+    MsgCritical = next_event(Ref),
+
+    [?_assertEqual([{ok, [{state, critical}]}], MsgNotEnough),
+     ?_assertEqual([{ok, [{state, ok}]}], MsgOk),
+     ?_assertEqual([{ok, [{state, critical}]}], MsgCritical)].
