@@ -12,12 +12,12 @@
          done/1
         ]).
 
--record(state, {send_output, threshold}).
+-record(state, {send_output, threshold=30}).
 
 %% API
-init(SendOutput, {Threshold}) ->
+init(SendOutput, Args) ->
     {ok, #state { send_output=SendOutput,
-                  threshold=Threshold}}.
+                  threshold=proplists:get_value(threshold, Args)}}.
 
 process(Event, _Last, State) ->
     EventValue = proplists:get_value(<<"value">>, Event),

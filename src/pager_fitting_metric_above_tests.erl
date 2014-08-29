@@ -20,7 +20,7 @@ metric_above_threshold_test_() ->
 
 start() ->
     Ref = make_ref(),
-    {ok, State} = ?MUT:init(pager_test_helpers:send_event_func(Ref, self()), {50}),
+    {ok, State} = ?MUT:init(pager_test_helpers:send_event_func(Ref, self()), [{threshold, 50}]),
     {Ref, State}.
 
 stop({_Ref, _State}) ->

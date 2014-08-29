@@ -70,8 +70,10 @@ first_value(_)->
 run_pipe(Msg) ->
     {ok, Pipe} = riak_pipe:exec(
                           [#fitting_spec{name={pager_test, node()},
-                                         arg=[{threshold, 40}],
-                                         module=pager_fitting_metric_above}],
+                                         arg={
+                                            [{module, pager_fitting_metric_above}],
+                                            [{threshold, 40}]},
+                                         module=pager_fitting_wrapper}],
                           []),
 
     ok = riak_pipe:queue_work(Pipe, [{<<"value">>, 20}]),
