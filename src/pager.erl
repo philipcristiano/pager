@@ -70,9 +70,14 @@ first_value(_)->
 run_pipe(Msg) ->
     {ok, Pipe} = riak_pipe:exec(
                           [#fitting_spec{name={pager_test, node()},
-                                         module=pager_fitting}],
+                                         arg=[{threshold, 40}],
+                                         module=pager_fitting_metric_above}],
                           []),
 
-    Reply = riak_pipe:queue_work(Pipe, Msg),
+    ok = riak_pipe:queue_work(Pipe, [{<<"value">>, 20}]),
+    ok = riak_pipe:queue_work(Pipe, [{<<"value">>, 30}]),
+    ok = riak_pipe:queue_work(Pipe, [{<<"value">>, 40}]),
+    ok = riak_pipe:queue_work(Pipe, [{<<"value">>, 50}]),
+    ok = riak_pipe:queue_work(Pipe, [{<<"value">>, 60}]),
     riak_pipe:eoi(Pipe),
-    {Reply, riak_pipe:collect_results(Pipe)}.
+    {Pipe, riak_pipe:collect_results(Pipe)}.
