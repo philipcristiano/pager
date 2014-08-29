@@ -2,19 +2,21 @@
 -behaviour(riak_pipe_vnode_worker).
 -include("deps/riak_pipe/include/riak_pipe.hrl").
 
+-ifdef(TEST).
+-include_lib("eunit/include/eunit.hrl").
+-endif.
+
 -export([
          init/2,
          process/3,
          done/1
         ]).
 
--record(state, {partition, fitting_details, threshold}).
+-record(state, {send_output, threshold}).
 
 %% API
-init(Partition, FittingDetails) ->
-    Threshold = proplists:get_value(threshold, FittingDetails#fitting_details.arg),
-    {ok, #state { partition=Partition,
-                  fitting_details=FittingDetails,
+init(SendOutput, {Threshold}) ->
+    {ok, #state { send_output=SendOutput,
                   threshold=Threshold}}.
 
 process(Event, _Last, State) ->
@@ -27,10 +29,8 @@ process(Event, _Last, State) ->
     StatelessEvent = proplists:delete(<<"state">>, Event),
     NewEvent = [{<<"state">>, NewEventState} | StatelessEvent],
 
-    riak_pipe_vnode_worker:send_output(
-        {NewEvent},
-        State#state.partition,
-        State#state.fitting_details),
+    SendOutput = State#state.send_output,
+    SendOutput(NewEvent),
     {ok, State}.
 
 done(_State) ->
