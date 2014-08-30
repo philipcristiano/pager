@@ -1,6 +1,9 @@
 -module(pager).
 
--export([ping/0, first_value/1, run/0, send_event/2]).
+-export([ping/0, first_value/1, run/0, run_pipe/1, send_event/2]).
+
+-include_lib("deps/riak_pipe/include/riak_pipe.hrl").
+
 
 
 ping() ->
@@ -61,3 +64,22 @@ first_value([[Value, Time]|T]) ->
     {ok, Value};
 first_value(_)->
     {error, no_value}.
+
+
+
+run_pipe(Msg) ->
+    {ok, Pipe} = riak_pipe:exec(
+                          [#fitting_spec{name={pager_test, node()},
+                                         arg={
+                                            [{module, pager_fitting_metric_above}],
+                                            [{threshold, 40}]},
+                                         module=pager_fitting_wrapper}],
+                          []),
+
+    ok = riak_pipe:queue_work(Pipe, [{<<"value">>, 20}]),
+    ok = riak_pipe:queue_work(Pipe, [{<<"value">>, 30}]),
+    ok = riak_pipe:queue_work(Pipe, [{<<"value">>, 40}]),
+    ok = riak_pipe:queue_work(Pipe, [{<<"value">>, 50}]),
+    ok = riak_pipe:queue_work(Pipe, [{<<"value">>, 60}]),
+    riak_pipe:eoi(Pipe),
+    {Pipe, riak_pipe:collect_results(Pipe)}.

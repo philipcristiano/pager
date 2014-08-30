@@ -10,7 +10,8 @@
                   sasl,
                   crypto,
                   riak_sysmon,
-                  riak_core
+                  riak_core,
+                  riak_pipe
                  ]},
   {mod, { pager_app, []}},
   {env, []}
