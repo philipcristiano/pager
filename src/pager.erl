@@ -48,10 +48,11 @@ run_pipe(Msg) ->
     {Pipe, riak_pipe:collect_results(Pipe)}.
 
 create_pipe(Name) ->
+    {ok, RouterPid} = pager_result_sink:start_link(),
     {ok, Pipe} = riak_pipe:exec(
                           [#fitting_spec{name={Name, node()},
                                          arg={
                                             [{module, pager_fitting_metric_above}],
                                             [{threshold, 40}]},
                                          module=pager_fitting_wrapper}],
-                          []).
+                          [{sink, #fitting{pid=RouterPid}}]).
