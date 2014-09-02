@@ -31,7 +31,9 @@ start(_StartType, _StartArgs) ->
 
 start_cowboy() ->
     Dispatch = cowboy_router:compile([
-        {'_', [{"/", pager_http_handler, []}]}
+        {'_', [{"/", pager_http_handler, []},
+               {"/static/[...]", cowboy_static, {dir, "priv/static/"}}
+        ]}
     ]),
     cowboy:start_http(pager_http_listener, 100, [{port, 8080}],
         [{env, [{dispatch, Dispatch}]}]
