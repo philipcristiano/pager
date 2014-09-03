@@ -8,6 +8,7 @@
 -export([websocket_terminate/3]).
 
 init({tcp, http}, _Req, _Opts) ->
+    pg2:join(pager_receiver, self()),
 	{upgrade, protocol, cowboy_websocket}.
 
 websocket_init(_TransportName, Req, _Opts) ->
@@ -19,6 +20,8 @@ websocket_handle({text, Msg}, Req, State) ->
 websocket_handle(_Data, Req, State) ->
 	{ok, Req, State}.
 
+websocket_info({pipe, Msg}, Req, State) ->
+    {reply, {text, jiffy:encode({Msg})}, Req, State};
 websocket_info({timeout, _Ref, Msg}, Req, State) ->
 	erlang:start_timer(5000, self(), <<"How' you doin'?">>),
 	{reply, {text, Msg}, Req, State};
