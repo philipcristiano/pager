@@ -52,6 +52,7 @@
     <script src="/static/jquery/jquery-2.1.1.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="/static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
+    <script src="/static/pager/js/ws.js"></script>
   </body>
 </html>
 
