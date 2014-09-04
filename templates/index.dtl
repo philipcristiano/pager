@@ -1,5 +1,7 @@
 {% extends "base.dtl" %}
 
+
 {% block content %}
+<div id="data"><p><Text!</p></div>
 {% endblock %}
 

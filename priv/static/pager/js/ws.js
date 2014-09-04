@@ -9,5 +9,6 @@ socket.onopen = function(event) {
 socket.onmessage = function(event) {
   var message = event.data;
   console.log(message);
+  $("#data").prepend("<p>" + message + "</p>");
 };
 
