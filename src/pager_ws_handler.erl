@@ -8,6 +8,7 @@
 -export([websocket_terminate/3]).
 
 init({tcp, http}, _Req, _Opts) ->
+    ok = pg2:create(pager_receiver),
     pg2:join(pager_receiver, self()),
 	{upgrade, protocol, cowboy_websocket}.
 
