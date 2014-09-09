@@ -1,6 +1,6 @@
 -module(pager).
 
--export([ping/0, create_pipe/1, run_pipe/1, send_event/2]).
+-export([ping/0, create_pipe/1, run_pipe/1, send_event/2, send_to_pipe/1]).
 
 -include_lib("deps/riak_pipe/include/riak_pipe.hrl").
 
@@ -39,20 +39,29 @@ send_metric(Type, Target, Value) ->
 run_pipe(Msg) ->
     {ok, Pipe} = create_pipe(pager_test),
 
+    send_to_pipe(Pipe),
+    riak_pipe:eoi(Pipe),
+    {Pipe, riak_pipe:collect_results(Pipe)}.
+
+send_to_pipe(Pipe) ->
     ok = riak_pipe:queue_work(Pipe, [{<<"value">>, 20}]),
     ok = riak_pipe:queue_work(Pipe, [{<<"value">>, 30}]),
     ok = riak_pipe:queue_work(Pipe, [{<<"value">>, 40}]),
     ok = riak_pipe:queue_work(Pipe, [{<<"value">>, 50}]),
-    ok = riak_pipe:queue_work(Pipe, [{<<"value">>, 60}]),
-    riak_pipe:eoi(Pipe),
-    {Pipe, riak_pipe:collect_results(Pipe)}.
+    ok = riak_pipe:queue_work(Pipe, [{<<"value">>, 60}]).
 
 create_pipe(Name) ->
     {ok, RouterPid} = pager_result_sink:start_link(),
     {ok, Pipe} = riak_pipe:exec(
-                          [#fitting_spec{name={Name, node()},
+                          [#fitting_spec{name={Name, metric_above},
                                          arg={
                                             [{module, pager_fitting_metric_above}],
-                                            [{threshold, 40}]},
-                                         module=pager_fitting_wrapper}],
-                          [{sink, #fitting{pid=RouterPid}}]).
+                                            [{threshold, 35}]},
+                                         module=pager_fitting_wrapper},
+                           #fitting_spec{name={Name, publisher},
+                                         arg={
+                                            [{module, pager_fitting_publisher}],
+                                            Name},
+                                         chashfun=follow,
+                                         module=pager_fitting_wrapper}], []
+                          ).
