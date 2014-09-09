@@ -61,7 +61,7 @@ create_pipe(Name) ->
                            #fitting_spec{name={Name, publisher},
                                          arg={
                                             [{module, pager_fitting_publisher}],
-                                            Name},
+                                            {pager_publisher, Name}},
                                          chashfun=follow,
                                          module=pager_fitting_wrapper}], []
                           ).

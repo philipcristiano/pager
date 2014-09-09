@@ -16,8 +16,10 @@ join_all() ->
 
 join([]) ->
     ok;
-join([H|T]) ->
-    pg2:join(H, self()),
+join([{pager_publisher, Name}|T]) ->
+    pg2:join({pager_publisher, Name}, self()),
+    join(T);
+join([_H|T]) ->
     join(T).
 
 websocket_init(_TransportName, Req, _Opts) ->
@@ -30,7 +32,7 @@ websocket_handle(_Data, Req, State) ->
 	{ok, Req, State}.
 
 websocket_info({pipe, Pipe, Msg}, Req, State) ->
-    Send = [{pipe, Pipe} | Msg],
+    Send = [{pipe, {[Pipe]}} | Msg],
     {reply, {text, jiffy:encode({Send})}, Req, State};
 websocket_info({timeout, _Ref, Msg}, Req, State) ->
 	erlang:start_timer(5000, self(), <<"How' you doin'?">>),
