@@ -3,9 +3,15 @@
 
 {% block content %}
 {% verbatim %}
-<div id="data"><p><Text!</p></div>
 
-<p> Nothing here {{'yet' + '!'}}</p>
+    Should be some pipes!
+    <div ng-repeat="event in events">
+
+        <p>{{event.pipe}} - {{event}}</p>
+
+    </div>
+    {{ "No " + "Pipes" }}
+
 {% endverbatim %}
 {% endblock %}
 
