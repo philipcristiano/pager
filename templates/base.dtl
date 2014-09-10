@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app>
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -52,6 +52,7 @@
     <script src="/static/jquery/jquery-2.1.1.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="/static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
+    <script src="/static/angular/angular-1.3.min.js"></script>
     <script src="/static/pager/js/ws.js"></script>
   </body>
 </html>
