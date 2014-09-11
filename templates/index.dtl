@@ -10,7 +10,6 @@
         <p>{{event.pipe}} - {{event}}</p>
 
     </div>
-    {{ "No " + "Pipes" }}
 
 {% endverbatim %}
 {% endblock %}

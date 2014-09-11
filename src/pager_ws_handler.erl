@@ -23,20 +23,17 @@ join([_H|T]) ->
     join(T).
 
 websocket_init(_TransportName, Req, _Opts) ->
-	erlang:start_timer(1000, self(), <<"Hello!">>),
+	% erlang:start_timer(1000, self(), <<"Hello!">>),
 	{ok, Req, undefined_state}.
 
-websocket_handle({text, Msg}, Req, State) ->
-	{reply, {text, << "That's what she said! ", Msg/binary >>}, Req, State};
+%% Handle messages from client
 websocket_handle(_Data, Req, State) ->
 	{ok, Req, State}.
 
+%% Handle messages from VM
 websocket_info({pipe, Pipe, Msg}, Req, State) ->
     Send = [{pipe, {[Pipe]}} | Msg],
     {reply, {text, jiffy:encode({Send})}, Req, State};
-websocket_info({timeout, _Ref, Msg}, Req, State) ->
-	erlang:start_timer(5000, self(), <<"How' you doin'?">>),
-	{reply, {text, Msg}, Req, State};
 websocket_info(_Info, Req, State) ->
 	{ok, Req, State}.
 

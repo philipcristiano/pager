@@ -1,9 +1,21 @@
-var pagerApp = angular.module('pagerApp', []);
+var pagerApp = angular.module('pagerApp', ['angular-websocket']);
+
+pagerApp.config(function(WebSocketProvider){
+    WebSocketProvider
+    .prefix('')
+    .uri('ws://localhost:8080/ws');
+});
 
 pagerApp.controller('PagerController', function
-    ($scope) {
-        $scope.events = [
-            {'pipe': 'the pipe', 'time': 1},
-            {'pipe': 'the second pipe', 'time': 2}
-        ];
+    ($scope, WebSocket) {
+        $scope.events = [];
+
+        WebSocket.onopen(function() {
+            console.log('Connection');
+        });
+
+        WebSocket.onmessage(function(event) {
+            $scope.events.push(JSON.parse(event.data));
+            console.log('message: ', event.data);
+        });
 });
