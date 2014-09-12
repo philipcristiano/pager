@@ -32,8 +32,9 @@ websocket_handle(_Data, Req, State) ->
 
 %% Handle messages from VM
 websocket_info({pipe, Pipe, Msg}, Req, State) ->
-    Send = [{pipe, {[Pipe]}} | Msg],
-    {reply, {text, jiffy:encode({Send})}, Req, State};
+    Send = [{type, event}, {pipe, [Pipe]}, {data, Msg}],
+
+    {reply, {text, jsx:encode(Send)}, Req, State};
 websocket_info(_Info, Req, State) ->
 	{ok, Req, State}.
 
