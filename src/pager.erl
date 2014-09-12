@@ -1,6 +1,6 @@
 -module(pager).
 
--export([ping/0, create_pipe/1, run_pipe/1, send_event/2, send_to_pipe/1]).
+-export([ping/0, create_pipe/1, run_pipe/1, send_event/2, send_to_pipe/1, pipe_groups/0]).
 
 -include_lib("deps/riak_pipe/include/riak_pipe.hrl").
 
@@ -65,3 +65,9 @@ create_pipe(Name) ->
                                          chashfun=follow,
                                          module=pager_fitting_wrapper}], []
                           ).
+
+pipe_groups() ->
+   lists:filter(fun(X) -> is_publisher(X) end, pg2:which_groups()).
+
+is_publisher({pager_publisher, X}) -> true;
+is_publisher(X) -> false.
