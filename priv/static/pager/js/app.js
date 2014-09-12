@@ -15,7 +15,7 @@ pagerApp.controller('PagerController', function
         });
 
         WebSocket.onmessage(function(event) {
-            $scope.events.push(JSON.parse(event.data));
+            $scope.events.unshift(JSON.parse(event.data));
             console.log('message: ', event.data);
         });
 });
