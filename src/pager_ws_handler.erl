@@ -36,7 +36,7 @@ websocket_handle(_Data, Req, State) ->
 
 %% Handle messages from VM
 websocket_info({send_groups}, Req, State) ->
-    Msg = [{type, groups}, {data, [groups_to_proplists(pager:pipe_groups())]}],
+    Msg = [{type, groups}, {data, groups_to_proplists(pager:pipe_groups())}],
     {reply, {text, jsx:encode(Msg)}, Req, {}};
 websocket_info({pipe, Pipe, Msg}, Req, State) ->
     Send = [{type, event}, {pipe, [Pipe]}, {data, Msg}],

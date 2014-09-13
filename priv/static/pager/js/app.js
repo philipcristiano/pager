@@ -15,7 +15,12 @@ pagerApp.controller('PagerController', function
         });
 
         WebSocket.onmessage(function(event) {
-            $scope.events.unshift(JSON.parse(event.data));
             console.log('message: ', event.data);
+            msg = JSON.parse(event.data)
+            if (msg['type'] == 'event') {
+                $scope.events.unshift(msg);
+            } else if (msg['type'] == 'groups') {
+                $scope.groups = msg['data'];
+            }
         });
 });

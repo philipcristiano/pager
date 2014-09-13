@@ -1,5 +1,18 @@
 {% extends "base.dtl" %}
 
+{% block sidebar %}
+{% verbatim %}
+
+    Should be some alert groups!
+    <div ng-repeat="group in groups">
+
+        <p>{{group}}</p>
+
+    </div>
+
+{% endverbatim %}
+
+{% endblock %}
 
 {% block content %}
 {% verbatim %}
