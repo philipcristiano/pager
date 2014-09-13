@@ -9,6 +9,7 @@ pagerApp.config(function(WebSocketProvider){
 pagerApp.controller('PagerController', function
     ($scope, WebSocket) {
         $scope.events = [];
+        $scope.groups = [];
 
         WebSocket.onopen(function() {
             console.log('Connection');
@@ -23,4 +24,12 @@ pagerApp.controller('PagerController', function
                 $scope.groups = msg['data'];
             }
         });
+
+        $scope.sync_pipe = function() {
+            console.log($scope.groups);
+            WebSocket.send(JSON.stringify({
+                "type": "groups",
+                "data": $scope.groups
+            }));
+        }
 });

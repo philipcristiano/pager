@@ -37,7 +37,7 @@ send_metric(Type, Target, Value) ->
     io:format("Resp: ~p~n", [Resp]).
 
 run_pipe(Msg) ->
-    {ok, Pipe} = create_pipe(pager_test),
+    {ok, Pipe} = create_pipe(<<"pager_test">>),
 
     send_to_pipe(Pipe),
     riak_pipe:eoi(Pipe),
