@@ -1,12 +1,32 @@
 {% extends "base.dtl" %}
 
+{% block sidebar %}
+{% verbatim %}
+
+    Should be some alert groups!
+    <form novalidate>
+    <div ng-repeat="group in groups">
+        <input type="checkbox" value={{group.id}} ng-model="group.selected" ng-change="sync_pipe()">
+            {{group.id}}
+        </input>
+
+    </div>
+    </form>
+
+{% endverbatim %}
+
+{% endblock %}
+
 {% block content %}
+{% verbatim %}
 
-    I like RSS and wanted SeatGeek events in my RSS reader instead of by
-    email. The feeds here will search for concerts within 5 miles of the Zip
-    Code in the URL. It returns the first 1000 events.
+    Should be some pipes!
+    <div ng-repeat="event in events">
 
-    Example: http://seatgeekrss.philipcristiano.com/atom/10016
+        <p>{{event.pipe}} - {{event}}</p>
 
+    </div>
+
+{% endverbatim %}
 {% endblock %}
 
