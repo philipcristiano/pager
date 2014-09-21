@@ -4,6 +4,7 @@ deps
 *.beam
 *.plt
 data/
+data_2/
 /ebin/
 log/
 erl_crash.dump

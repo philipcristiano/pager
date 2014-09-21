@@ -30,8 +30,18 @@ provision:
 
 shell: compile
 	erl -pag ebin \
-	-sname pager \
+	-name pager@127.0.0.1 \
 	-setcookie shell \
 	-pa deps/*/ebin \
 	-pa ebin \
+	-config pager
+	-eval "pager_app:start()"
+
+shell_2: compile
+	erl -pag ebin \
+	-name pager_2@127.0.0.1 \
+	-setcookie shell \
+	-pa deps/*/ebin \
+	-pa ebin \
+	-config pager_2
 	-eval "pager_app:start()"
