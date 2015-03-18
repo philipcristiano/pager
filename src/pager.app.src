@@ -3,6 +3,7 @@
   {description, ""},
   {vsn, "1"},
   {registered, []},
+  {modules, []},
   {applications, [
                   kernel,
                   stdlib,
@@ -11,7 +12,6 @@
                   crypto,
                   riak_sysmon,
                   riak_core,
-                  riak_pipe,
                   cowboy
                  ]},
   {mod, { pager_app, []}},

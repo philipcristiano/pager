@@ -27,6 +27,8 @@ start_ok(App, _Type, {error, Reason}) ->
 
 start(_StartType, _StartArgs) ->
     {ok, _} =pager_sup:start_link(),
+    ok = riak_core:register([{vnode_module, pager_vnode}]),
+    ok = riak_core_node_watcher:service_up(pager, self()),
     start_cowboy().
 
 start_cowboy() ->

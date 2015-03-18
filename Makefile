@@ -1,37 +1,41 @@
-compile: deps
-	rebar compile
+PROJECT=pager
+CT_OPTS = -create_priv_dir auto_per_tc
+PKG_REVISION ?= $(shell git describe --tags)
+PKG_VERSION	?= $(shell git describe --tags | tr - .)
 
-.PHONY: deps
-deps:
-	rebar get-deps
+DEPS = json kvc riak_core cowboy jiffy jsx erlydtl
+dep_json = git https://github.com/hio/erlang-json.git
+dep_kvc = git https://github.com/etrepum/kvc.git
+dep_riak_core = git https://github.com/basho/riak_core 2.0.2
+dep_cowboy = git https://github.com/ninenines/cowboy.git 1.0.0
+dep_jiffy = git https://github.com/davisp/jiffy.git 0.13.0
+dep_jsx = git https://github.com/talentdeficit/jsx.git v2.1.1
+dep_erlydtl = git https://github.com/evanmiller/erlydtl.git
 
-erl: compile
-	ERL_LIBS=deps erl -pa ebin -pa deps -s pager_app -sname pager
+.PHONY: release
 
-.PHONY: server
-server: compile
-	ERL_LIBS=deps erl -pa ebin -pa deps -s pager_app -noshell -sname pager
+release: clean app
+	rm -rf _rel
+	sed  "s/VERSION/\"$(PKG_VERSION)\"/" < relx.config.script > relx.config
+	./relx release --relname pager --relvsn "$(PKG_VERSION)" -V 3 --lib-dir ebin
 
-.PHONY: test
-test: compile
-	rebar eunit
+package: release
+	rm -f *.deb
+	fpm -s dir -t deb -n pager -v "$(PKG_VERSION)" \
+		--before-install=rel/before-install \
+		_rel/pager=/opt/ \
+		rel/init=/etc/init.d/pager \
+		rel/var/lib/pager/=/var/lib/pager/ \
+		rel/etc/pager/pager.config=/etc/pager/pager.config \
+		rel/etc/default/pager=/etc/default/pager
 
-.PHONY: package
-package:
-	tar -czf package.tgz src Makefile start_server src rebar.config templates priv
-
-.PHONY: deploy
-deploy: package
-	time ansible-playbook -i ansible/linode -u root ansible/deploy.yml
-
-.PHONY: provision
-provision:
-	time ansible-playbook -i ansible/linode -u root ansible/site.yml
-
-shell: compile
+shell_1: app
+	mkdir -p data/{cluster_meta,ring}
 	erl -pag ebin \
-	-sname pager \
+	-name pager@127.0.0.1 \
 	-setcookie shell \
-	-pa deps/*/ebin \
+	-pa {apps,deps}/*/ebin \
 	-pa ebin \
-	-eval "pager_app:start()"
+	-eval "application:ensure_all_started(pager)."
+
+include erlang.mk

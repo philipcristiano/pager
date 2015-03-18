@@ -24,9 +24,7 @@ start_link() ->
 %% ===================================================================
 
 init([]) ->
-    VnodeMaster = { pager_vnode_master,
-                  {riak_core_vnode_master, start_link, [pager_vnode]},
-                  permanent, 5000, worker, [riak_core_vnode_master]},
-    {ok, { {one_for_one, 5, 10},
-        [VnodeMaster]} }.
-
+    VMaster = {pager_vnode_master,
+               {riak_core_vnode_master, start_link, [pager_vnode]},
+               permanent, 5000, worker, [riak_core_vnode_master]},
+    {ok, { {one_for_one, 5, 10}, [VMaster]} }.

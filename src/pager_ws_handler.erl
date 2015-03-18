@@ -6,6 +6,8 @@
 -export([websocket_handle/3]).
 -export([websocket_info/3]).
 -export([websocket_terminate/3]).
+-export([join_all/0,
+         join/1]).
 
 init({tcp, http}, _Req, _Opts) ->
     % join_all(),

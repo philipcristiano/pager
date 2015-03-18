@@ -7,3 +7,4 @@ data/
 /ebin/
 log/
 erl_crash.dump
+.erlang.mk.packages.v2

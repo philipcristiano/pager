@@ -13,7 +13,7 @@
 -record(state, {name}).
 
 %% API
-init(SendOutput, Name) ->
+init(_SendOutput, Name) ->
     pg2:create(Name),
     {ok, #state {name=Name}}.
 
@@ -27,7 +27,7 @@ done(_State) ->
     ok.
 
 
-send([], Name, _Msg) ->
+send([], _Name, _Msg) ->
     ok;
 send([Pid|Pids], Name, Msg) ->
     Pid ! {pipe, Name, Msg},

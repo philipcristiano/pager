@@ -1,5 +1,4 @@
 -module(pager_fitting_filter).
--include("deps/riak_pipe/include/riak_pipe.hrl").
 
 -ifdef(TEST).
 -include_lib("eunit/include/eunit.hrl").
