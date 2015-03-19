@@ -20,7 +20,7 @@
          terminate/2,
          code_change/3]).
 
--record(state, {}).
+-record(state, {pipe}).
 
 -include_lib("brod/include/brod.hrl").
 
@@ -60,7 +60,8 @@ init([]) ->
 
     {ok, Consumer} = brod:start_consumer(Hosts, Topic, 0),
     ok = brod:consume(Consumer, self(), Offset, 1000, 0, 1000000),
-    {ok, #state{}}.
+    {ok, Pipe} = pager:create_pipe(<<"test">>),
+    {ok, #state{pipe=Pipe}}.
 
 %%--------------------------------------------------------------------
 %% @private
@@ -103,11 +104,11 @@ handle_cast(_Msg, State) ->
 %%                                   {stop, Reason, State}
 %% @end
 %%--------------------------------------------------------------------
-handle_info(#message_set{messages=Msgs}, State) ->
+handle_info(#message_set{messages=Msgs}, State=#state{pipe=Pipe}) ->
   lists:foreach(
     fun(#message{key=_K, value=V}) ->
-        pager:send_event(jsx:decode(V))
-        %io:format("~p~n", [K])
+        %pager:send_event(jsx:decode(V))
+        riak_pipe:queue_work(Pipe, jsx:decode(V))
     end, Msgs),
   {noreply, State}.
 

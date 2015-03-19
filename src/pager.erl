@@ -5,6 +5,7 @@
          send_metric/3]).
 
 
+-include_lib("riak_pipe/include/riak_pipe.hrl").
 
 
 ping() ->
@@ -46,30 +47,31 @@ run_pipe(_Msg) ->
     % {Pipe, riak_pipe:collect_results(Pipe)}.
     ok.
 
-send_to_pipe(_Pipe) ->
-    ok.
-    % ok = riak_pipe:queue_work(Pipe, [{<<"value">>, 20}]),
-    % ok = riak_pipe:queue_work(Pipe, [{<<"value">>, 30}]),
-    % ok = riak_pipe:queue_work(Pipe, [{<<"value">>, 40}]),
-    % ok = riak_pipe:queue_work(Pipe, [{<<"value">>, 50}]),
-    % ok = riak_pipe:queue_work(Pipe, [{<<"value">>, 60}]).
+send_to_pipe(Pipe) ->
+     ok = riak_pipe:queue_work(Pipe, [{<<"value">>, 20}]),
+     ok = riak_pipe:queue_work(Pipe, [{<<"value">>, 30}]),
+     ok = riak_pipe:queue_work(Pipe, [{<<"value">>, 40}]),
+     ok = riak_pipe:queue_work(Pipe, [{<<"value">>, 50}]),
+     ok = riak_pipe:queue_work(Pipe, [{<<"value">>, 60}]).
 
-create_pipe(_Name) ->
-    % {ok, RouterPid} = pager_result_sink:start_link(),
-    % {ok, Pipe} = riak_pipe:exec(
-    %                       [#fitting_spec{name={Name, metric_above},
-    %                                      arg={
-    %                                         [{module, pager_fitting_metric_above}],
-    %                                         [{threshold, 35}]},
-    %                                      module=pager_fitting_wrapper},
-    %                        #fitting_spec{name={Name, publisher},
-    %                                      arg={
-    %                                         [{module, pager_fitting_publisher}],
-    %                                         {pager_publisher, Name}},
-    %                                      chashfun=follow,
-    %                                      module=pager_fitting_wrapper}], []
-    %                       ).
-    ok.
+create_pipe(Name) ->
+     {ok, _RouterPid} = pager_result_sink:start_link(),
+     {ok, Pipe} = riak_pipe:exec(
+                           [
+                            #fitting_spec{name={Name, filter},
+                                          arg={
+                                             [{module, pager_fitting_filter}],
+                                             [{<<"key">>, <<"puppet_lastrun/ok">>}]},
+                                          chashfun=follow,
+                                          module=pager_fitting_wrapper},
+                            #fitting_spec{name={Name, publisher},
+                                          arg={
+                                             [{module, pager_fitting_publisher}],
+                                             {pager_publisher, Name}},
+                                          chashfun=follow,
+                                          module=pager_fitting_wrapper}], []
+                           ),
+    {ok, Pipe}.
 
 pipe_groups() ->
    lists:filter(fun(X) -> is_publisher(X) end, pg2:which_groups()).
