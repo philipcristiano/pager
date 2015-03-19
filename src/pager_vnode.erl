@@ -32,11 +32,15 @@ handle_command(ping, _Sender, State) ->
     {reply, {pong, State2}, State2};
 handle_command({event, RoutingKey, Data}, _Sender, State) ->
     {reply, {pong, {event, RoutingKey, Data}, State}, State};
-handle_command({metric, Type, Metric, Value}, _Sender, State) ->
+handle_command({event, Event}, _Sender, State) ->
+    Partition = State#state.partition,
+    io:format("VNode event ~p~n    ~p~n", [Partition, Event]),
+    {reply, ok, State};
+handle_command({metric, _Type, _Metric, Value}, _Sender, State) ->
     State2 = #state {partition=State#state.partition,
                      count=State#state.count + 1},
     {reply, {pong, State2, Value}, State2};
-handle_command(Message, _Sender, State) ->
+handle_command(_Message, _Sender, State) ->
     {noreply, State}.
 
 handle_handoff_command(_Message, _Sender, State) ->

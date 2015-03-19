@@ -1,11 +1,14 @@
 # PagEr
 
-A tool similar to my Graphite Pager project. This is so I can play with Erlang as an actual goal.
+Play with Erlang to make a stream processor.
 
-    > pager_app:start().
-    > pager:ping().
+Currently just reads from kafka and prints out messages
 
-With Riak Pipes:
+Create a `pager.config`
 
-
-    > pager:run_pipe("Hello pipeWorld").
+    [
+     {pager, [
+              {kafka_hosts, [{"hostname", 9092}]},
+              {topic, <<"topic">>}
+             ]}
+    ].

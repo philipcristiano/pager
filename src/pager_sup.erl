@@ -27,4 +27,9 @@ init([]) ->
     VMaster = {pager_vnode_master,
                {riak_core_vnode_master, start_link, [pager_vnode]},
                permanent, 5000, worker, [riak_core_vnode_master]},
-    {ok, { {one_for_one, 5, 10}, [VMaster]} }.
+    KafkaConsumer = {kafka_consumer,
+                     {pager_kafka_consumer, start_link, []},
+                     permanent, 5000, worker, [pager_kafka_consumer]},
+
+    {ok, { {one_for_one, 5, 10}, [VMaster,
+                                  KafkaConsumer]} }.
