@@ -5,7 +5,7 @@
 -export([handle/2]).
 -export([terminate/3]).
 
-init({tcp, http}, Req, Opts) ->
+init({tcp, http}, Req, _Opts) ->
     {ok, Req, init}.
 
 handle(Req, State) ->
@@ -14,5 +14,5 @@ handle(Req, State) ->
     {ok, Req2} = cowboy_req:reply(200, [], Resp, Req),
     {ok, Req2, State}.
 
-terminate(Reason, Req, State) ->
+terminate(_Reason, _Req, _State) ->
     ok.

@@ -1,6 +1,6 @@
 -module(pager_fitting_metric_above).
 -behaviour(riak_pipe_vnode_worker).
--include("deps/riak_pipe/include/riak_pipe.hrl").
+-include_lib("riak_pipe/include/riak_pipe.hrl").
 
 -ifdef(TEST).
 -include_lib("eunit/include/eunit.hrl").
