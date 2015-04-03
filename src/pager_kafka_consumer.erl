@@ -36,6 +36,7 @@
 %% @end
 %%--------------------------------------------------------------------
 start_link() ->
+    timer:sleep(1000),
     gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
 
 %%%===================================================================
@@ -104,11 +105,11 @@ handle_cast(_Msg, State) ->
 %%                                   {stop, Reason, State}
 %% @end
 %%--------------------------------------------------------------------
-handle_info(#message_set{messages=Msgs}, State=#state{pipe=Pipe}) ->
+handle_info(#message_set{messages=Msgs}, State) ->
   lists:foreach(
     fun(#message{key=_K, value=V}) ->
         %pager:send_event(jsx:decode(V))
-        riak_pipe:queue_work(Pipe, jsx:decode(V))
+        pager_vnode:start_message(jsx:decode(V))
     end, Msgs),
   {noreply, State}.
 

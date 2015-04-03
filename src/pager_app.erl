@@ -38,7 +38,8 @@ start_cowboy() ->
                {"/ws", pager_ws_handler, []}
         ]}
     ]),
-    cowboy:start_http(pager_http_listener, 100, [{port, 8080}],
+    {ok, Port} = application:get_env(http_port),
+    cowboy:start_http(pager_http_listener, 100, [{port, Port}],
         [{env, [{dispatch, Dispatch}]}]
     ),
     pager_http_sup:start_link().

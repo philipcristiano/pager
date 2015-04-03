@@ -29,7 +29,10 @@ init([]) ->
                permanent, 5000, worker, [riak_core_vnode_master]},
     KafkaConsumer = {kafka_consumer,
                      {pager_kafka_consumer, start_link, []},
-                     permanent, 5000, worker, [pager_kafka_consumer]},
+                     permanent, 30000, worker, [pager_kafka_consumer]},
+    % VNodeSup = {pager_vnode_sup,
+    %             {pager_vnode_sup, start_link, []},
+    %             permanent, 5000, supervisor, [pager_vnode_sup]},
 
     {ok, { {one_for_one, 5, 10}, [VMaster,
                                   KafkaConsumer]} }.

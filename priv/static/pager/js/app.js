@@ -3,7 +3,7 @@ var pagerApp = angular.module('pagerApp', ['angular-websocket']);
 pagerApp.config(function(WebSocketProvider){
     WebSocketProvider
     .prefix('')
-    .uri('ws://localhost:8080/ws');
+    .uri('ws://localhost:8081/ws');
 });
 
 pagerApp.controller('PagerController', function
