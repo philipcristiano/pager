@@ -1,0 +1,13 @@
+[
+ {riak_core, [
+         {platform_data_dir, "data"},
+         {ring_state_dir, "data"},
+         {handoff_port, 8090},
+         {schema_dirs, ["deps/riak_core/priv"]}
+         ]},
+ {pager, [
+          {http_port, 8081},
+          {kafka_hosts, [{"FQDN", PORT}]},
+          {topic, <<"TOPIC">>}
+         ]}
+].
