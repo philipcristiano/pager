@@ -1,5 +1,6 @@
 -module(pager_vnode).
 -behaviour(riak_core_vnode).
+-compile({parse_transform, lager_transform}).
 
 -export([start_vnode/1,
          init/1,
@@ -24,10 +25,10 @@ start_vnode(I) ->
     riak_core_vnode_master:get_vnode_pid(I, ?MODULE).
 
 init([Partition]) ->
-    io:format("start vnode ~p~n", [Partition]),
+    lager:info("Starting vnode ~p", [Partition]),
     {ok, SupPid} = pager_vnode_sup:start_link(),
     {ok, RouterPid} = gen_event:start_link(),
-    io:format("started vnode ~p~n", [Partition]),
+    lager:info("Started vnode ~p", [Partition]),
     %ok = gen_event:add_handler(RouterPid, pager_vnode_handler_printer, []),
     Group = {pager_publisher, "puppet_lastrun"},
     pg2:create(Group),
