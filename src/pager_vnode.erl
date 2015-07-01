@@ -49,7 +49,7 @@ handle_command({event, RoutingKey, Data}, _Sender, State) ->
     {reply, {pong, {event, RoutingKey, Data}, State}, State};
 handle_command({event, Event}, _Sender, State) ->
     Partition = State#state.partition,
-    io:format("VNode event ~p~n    ~p~n", [Partition, Event]),
+    lager:info("VNode event:~p, ~p", [Partition, Event]),
     {reply, ok, State};
 handle_command({metric, _Type, _Metric, Value}, _Sender, State) ->
     State2 = #state {partition=State#state.partition,
